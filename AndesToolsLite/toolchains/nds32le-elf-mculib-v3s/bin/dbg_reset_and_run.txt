@@ -1,0 +1,20 @@
+target remote:9903
+source C:\Andestech\AndeSight_RDS_v323\toolchains\nds32le-elf-mculib-v3s\bin\.Andesgdbinit
+set $nds32_elf_check = 1
+mem 0x00000000 0x60000000 rw 32 nocache
+mem 0x80000000 0x90000000 rw 32 nocache
+mem 0x90100000 0x90200000 rw 32 nocache
+mem 0x90200000 0x90300000 rw 32 nocache
+mem 0x90300000 0x90400000 rw 32 nocache
+mem 0x90400000 0x90500000 rw 32 nocache
+mem 0x90500000 0x90600000 rw 32 nocache
+mem 0x90600000 0x90700000 rw 32 nocache
+mem 0x90900000 0x90A00000 rw 32 nocache
+mem 0x98000000 0xA0000000 rw 32 nocache
+info mem
+show endian
+info registers cr1 
+info registers cr2 
+p/x (char)-1
+b main
+targetreset

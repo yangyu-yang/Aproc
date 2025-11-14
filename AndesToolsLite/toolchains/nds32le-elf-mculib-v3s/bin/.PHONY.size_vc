@@ -1,0 +1,2 @@
+   text (code + rodata)	   data	    bss	    dec	    hex	filename
+   4016 (4016 +      0)	      0	      0	   4016	    fb0	vocalcut.o (ex libVocalCut.a)

@@ -1,0 +1,9 @@
+iceman_debug0.log
+User : 99 19 command.c:546 command_print(): debug_level: 2
+Info : 130 19 transport.c:117 allow_transports(): only one transport option; autoselect 'aice_jtag'
+User : 154 19 command.c:546 command_print(): trst_and_srst separate srst_gates_jtag trst_push_pull srst_open_drain connect_deassert_srst
+User : 161 20 command.c:546 command_print(): adapter speed: RCLK - adaptive
+Info : 189 42 aice_apis.c:945 aice_get_info(): AICE version: hw_ver = 0x20002, fw_ver = 0x0, fpga_ver = 0x0
+Info : 191 42 aice_apis.c:949 aice_get_info(): AICE hardware features: 0xc0000004
+Info : 193 42 aice_apis.c:958 aice_get_info(): AICE batch data buffer size: 128 words
+Info : 205 57 aice_apis.c:2130 aice_open_device(): AICE initialization started
