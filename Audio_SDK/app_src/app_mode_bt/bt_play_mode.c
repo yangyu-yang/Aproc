@@ -25,7 +25,6 @@
 #include "bt_stack_service.h"
 #include "ctrlvars.h"
 #include "bt_interface.h"
-#include "mode_task.h"
 
 
 #ifdef CFG_APP_BT_MODE_EN

@@ -226,19 +226,19 @@ static void flashbin_data_upgrade(uint8_t *buf, uint32_t len)
 				 DBG("\n[OTA]: ParamBIN write finished!\n");
 				tx_buf[5] = 0x00;
 
-				AudioEffectParambin.flow_index = 0;
-				AudioEffectParambin.param_mode_index = 0;	//reset all to 0 because flowchart may change
+				mainAppCt.effect_flow_index = 0;
+				mainAppCt.effect_param_mode_index = 0;	//reset all to 0 because flowchart may change
 
 				MessageContext msgSend;
-				if(GetSystemMode() == ModeSafe)
-				{
-					if(GetSysModeState(ModeSafe) == ModeStateReady)
-					{
-						SetSysModeState(ModeSafe, ModeStateSusend);
-					}
-					msgSend.msgId = MSG_DEVICE_SERVICE_MODE_OK;
-				}
-				else
+//				if(GetSystemMode() == ModeSafe)
+//				{
+//					if(GetSysModeState(ModeSafe) == ModeStateReady)
+//					{
+//						SetSysModeState(ModeSafe, ModeStateSusend);
+//					}
+//					msgSend.msgId = MSG_DEVICE_SERVICE_MODE_OK;
+//				}
+//				else
 				{
 					msgSend.msgId = MSG_EFFECT_REFRESH;
 				}
@@ -488,7 +488,7 @@ void roboeffect_effect_enquiry_stream(uint8_t *buf, uint32_t tlen)
 				uint32_t tSize = 0, flow_size;
 				uint8_t *data_ptr, *flow_data;
 
-				if((flow_data = roboeffect_parambin_get_flow_by_index((uint8_t *)AudioEffect_Parambin_GetFlashEffectAddr(), AudioEffectParambin.flow_index, &flow_size)) == NULL)
+				if((flow_data = roboeffect_parambin_get_flow_by_index((uint8_t *)AudioEffect_Parambin_GetFlashEffectAddr(), mainAppCt.effect_flow_index, &flow_size)) == NULL)
 				{
 					return;
 				}
@@ -604,11 +604,11 @@ void roboeffect_effect_enquiry_stream(uint8_t *buf, uint32_t tlen)
 			temp[8] = 0x00;//package number
 			if(buf[0] == V3_PACKAGE_TYPE_FLOW_INDEX_QUERY)
 			{
-				temp[9] = AudioEffectParambin.flow_index;
+				temp[9] = mainAppCt.effect_flow_index;
 			}
 			else if(buf[0] == V3_PACKAGE_TYPE_MODE_INDEX_QUERY)
 			{
-				temp[9] = AudioEffectParambin.param_mode_index;
+				temp[9] = mainAppCt.effect_param_mode_index;
 			}
 
 			temp[10] = 0x01;// EOM
@@ -621,15 +621,15 @@ void roboeffect_effect_enquiry_stream(uint8_t *buf, uint32_t tlen)
 		{
 			if(buf[0] == V3_PACKAGE_TYPE_FLOW_INDEX_QUERY)
 			{
-				AudioEffectParambin.flow_index = buf[1];
-				AudioEffectParambin.param_mode_index = 0;
+				mainAppCt.effect_flow_index = buf[1];
+				mainAppCt.effect_param_mode_index = 0;
 			}
 			else if(buf[0] == V3_PACKAGE_TYPE_MODE_INDEX_QUERY)
 			{
-				AudioEffectParambin.param_mode_index = buf[1];
+				mainAppCt.effect_param_mode_index = buf[1];
 			}
 
-			DBG("switch flow: %d, %d\n", AudioEffectParambin.flow_index, AudioEffectParambin.param_mode_index);
+			DBG("switch flow: %d, %d\n", mainAppCt.effect_flow_index, mainAppCt.effect_param_mode_index);
 
 			MessageContext msgSend;
 			msgSend.msgId = MSG_EFFECT_REFRESH;

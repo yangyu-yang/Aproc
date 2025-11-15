@@ -34,9 +34,7 @@
 #include "rtc_timer.h"
 #include "rtc_ctrl.h"
 #include "efuse.h"
-#include "mode_task.h"
 #include "device_detect.h"
-#include "idle_mode.h"
 #include "flash_table.h"
 #include "sys_param.h"
 #include "pmu.h"
@@ -46,7 +44,7 @@
 #include "adc.h"
 //-----------------globle timer----------------------//
 volatile uint32_t gInsertEventDelayActTimer = 2000; // ms
-volatile uint32_t gChangeModeTimeOutTimer = CHANGE_MODE_TIMEOUT_COUNT;
+volatile uint32_t gChangeModeTimeOutTimer = 600; // ms CHANGE_MODE_TIMEOUT_COUNT;
 volatile uint32_t gDeviceCheckTimer = DEVICE_DETECT_TIMER; //ms
 #ifdef CFG_FUNC_USB_HOST_AUDIO_MIX_MODE
 volatile uint32_t gHostUsbMicUnMuteTimer;//ms

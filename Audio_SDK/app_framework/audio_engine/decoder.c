@@ -605,8 +605,9 @@ int32_t DecoderInit(void *io_handle, DecoderChannels DecoderChannel, int32_t ioT
 								  gAudioDecoders[DecoderChannel]->song_info.num_channels,
 								  gAudioDecoders[DecoderChannel]->song_info.sampling_rate);
 #ifdef	CFG_AUDIO_WIDTH_24BIT
-			if(DecoderChannel == DECODER_MODE_CHANNEL &&
-			  (GetSystemMode() == ModeUDiskAudioPlay || GetSystemMode() == ModeCardAudioPlay))
+			if(DecoderChannel == DECODER_MODE_CHANNEL
+//					&& (GetSystemMode() == ModeUDiskAudioPlay || GetSystemMode() == ModeCardAudioPlay)
+					)
 			{
 				uint8_t source_index = DecoderServiceCt[DecoderChannel].DecoderSourecNum;
 				if(gAudioDecoders[DecoderChannel]->song_info.pcm_bit_width == 24 || gAudioDecoders[DecoderChannel]->song_info.pcm_bit_width == 32)

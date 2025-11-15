@@ -15,7 +15,6 @@
 #include "audio_core_api.h"
 #include "audio_core_adapt.h"
 #include "dac.h"
-#include "mode_task.h"
 #include "audio_vol.h"
 #include "main_task.h"
 #include "ctrlvars.h"
@@ -1940,6 +1939,7 @@ bool AudioCoreSourceSync(void)
 					SOURCE_BIT_DIS(AudioCore.FrameReady, i);
 					AudioCore.AudioSource[i].Active = TRUE;
 					AudioCoreSourceGet(i);
+					AudioCore.AudioSource[i].FrameReady = TRUE;
 				}
 			}
 

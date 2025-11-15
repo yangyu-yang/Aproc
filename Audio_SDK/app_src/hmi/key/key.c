@@ -20,7 +20,6 @@
 #include "ctrlvars.h"
 #include "timeout.h"
 #include "beep.h"
-#include "mode_task.h"
 #include "bt_config.h"
 #ifdef CFG_RES_ADC_KEY_SCAN
 #include "adc_key.h"

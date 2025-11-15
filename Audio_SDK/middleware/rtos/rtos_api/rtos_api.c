@@ -166,10 +166,10 @@ void osSemaphoreMutexCreate(void)
 		SbcDecoderMutex = osMutexCreate();
 	}
 #endif
-	if(SysModeMutex == NULL)
-	{
-		SysModeMutex = osMutexCreate();
-	}
+//	if(SysModeMutex == NULL)
+//	{
+//		SysModeMutex = osMutexCreate();
+//	}
 #ifdef CFG_FUNC_REMIND_SOUND_EN
 	if(RemindMutex == NULL)
 	{
@@ -213,10 +213,10 @@ void osSemaphoreMutexUnlock(void)//bkd add 2021.04.25
 	}
 #endif
 
-	if(SysModeMutex != NULL)
-	{
-		osMutexUnlock(SysModeMutex);
-	}
+//	if(SysModeMutex != NULL)
+//	{
+//		osMutexUnlock(SysModeMutex);
+//	}
 
 	DecoderOslockUnlock();
 }

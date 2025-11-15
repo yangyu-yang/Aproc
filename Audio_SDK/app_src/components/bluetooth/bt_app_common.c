@@ -32,7 +32,6 @@
 #include "bt_app_common.h"
 #include "bt_app_connect.h"
 #include "bt_app_sniff.h"
-#include "mode_task.h"
 #include "bt_stack_service.h"
 #include "bt_play_mode.h"
 

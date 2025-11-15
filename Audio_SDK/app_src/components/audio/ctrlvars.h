@@ -29,6 +29,7 @@ extern "C" {
 #include "i2s_interface.h"
 #include "audio_effect_process.h"
 #include "audio_vol.h"
+#include "rtos_api.h"
 
 
 #define  MAX_MIC_DIG_STEP               (32)

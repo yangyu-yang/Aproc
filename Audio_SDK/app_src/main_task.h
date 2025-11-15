@@ -21,7 +21,6 @@
 #include "audio_core_api.h"
 #include "app_message.h"
 #include "timeout.h"
-#include "mode_task.h"
 #include "mode_task_api.h"
 #include "flash_boot.h"
 #ifdef CFG_FUNC_DISPLAY_EN
@@ -48,8 +47,8 @@ typedef struct _MainAppContext
 	MessageHandle		msgHandle;
 	TaskState			state;
 
-	SysModeNumber		SysCurrentMode;
-	SysModeNumber		SysPrevMode;
+//	SysModeNumber		SysCurrentMode;
+//	SysModeNumber		SysPrevMode;
 
 /*************************mode common*************************************/
 #ifdef CFG_RES_AUDIO_DAC0_EN
@@ -87,7 +86,11 @@ typedef struct _MainAppContext
 	uint32_t			SPDIF_OUT_FIFO_LEN;
 #endif
 
-	uint32_t			*ADCFIFO;
+	uint32_t			*ADC0FIFO;
+	uint32_t			ADC0FIFO_len;
+
+	uint32_t			*ADC1FIFO;
+	uint32_t			ADC1FIFO_len;
 /******************************************************************/
 //#ifdef CFG_FUNC_DISPLAY_EN
 //	bool				DisplaySync;
@@ -109,7 +112,8 @@ typedef struct _MainAppContext
 #ifdef CFG_APP_BT_MODE_EN
     uint8_t     HfVolume;
 #endif
-//	uint8_t     EffectMode;
+	uint16_t	effect_flow_index;
+	uint16_t	effect_param_mode_index;
 #ifdef CFG_FUNC_MUSIC_EQ_MODE_EN
 	uint8_t     EqMode;
 #endif

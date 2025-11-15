@@ -24,7 +24,6 @@
 #include "bt_manager.h"
 #include "bt_config.h"
 #include "bt_spp_api.h"
-#include "mode_task.h"
 
 #if (BT_SPP_SUPPORT)
 void BtSppCallback(BT_SPP_CALLBACK_EVENT event, BT_SPP_CALLBACK_PARAMS * param)

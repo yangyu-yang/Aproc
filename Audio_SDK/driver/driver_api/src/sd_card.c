@@ -22,7 +22,6 @@
 #include "gpio.h"
 #include "watchdog.h"
 #ifdef FUNC_OS_EN
-#include "mode_task.h"
 
 #include "rtos_api.h" //add for mutex declare
 

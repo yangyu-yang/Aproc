@@ -15,36 +15,61 @@
 #include "roboeffect_api.h"
 #include "effects_param_v3.h"
 #include "core_d1088.h"
+#include "audio_stream_api.h"
 
 
+/**********************source************************/
+extern audio_io_config_t bt_source_config;
+extern audio_io_config_t hdmi_source_config;
+extern audio_io_config_t i2s0_source_config;
+extern audio_io_config_t i2s1_source_config;
+extern audio_io_config_t linein_source_config;
+extern audio_io_config_t media_source_config;
+extern audio_io_config_t spdif_source_config;
+extern audio_io_config_t usb_source_config;
+extern audio_io_config_t mic_source_config;
+extern audio_io_config_t remind_source_config;
+extern audio_io_config_t rec_source_config;
+/***********************sink***********************/
+extern audio_io_config_t dac0_sink_config;
+extern audio_io_config_t rec_sink_config;
+extern audio_io_config_t i2s0_sink_config;
+extern audio_io_config_t i2s1_sink_config;
+extern audio_io_config_t spdif_sink_config;
+extern audio_io_config_t usb_sink_config;
+extern audio_io_config_t bt_source_sink_config;
 /**************************** source + sink + effect_name start*********************************************/
 #define AUDIO_SOURCE_ENUM_MAP(XX) \
-    XX(MIC_SOURCE_NUM,            "MIC_SOURCE") \
-    XX(APP_SOURCE_NUM,            "APP_SOURCE") \
-    XX(REMIND_SOURCE_NUM,         "REMIND_SOURCE") \
-    XX(PLAYBACK_SOURCE_NUM,       "REC_SOURCE") \
-    XX(I2S_MIX_SOURCE_NUM,        "I2S_MIX_SOURCE") \
-    XX(I2S_MIX2_SOURCE_NUM,       "I2S_MIX2_SOURCE") \
-    XX(USB_SOURCE_NUM,            "USB_SOURCE") \
-    XX(LINEIN_MIX_SOURCE_NUM,     "LINEIN_MIX_SOURCE") \
+	XX(BT_SOURCE_NUM,			"BT_SOURCE",			&bt_source_config) \
+	XX(HDMI_SOURCE_NUM,			"HDMI_SOURCE",			&hdmi_source_config) \
+	XX(I2S0_SOURCE_NUM,			"I2S0_SOURCE",			&i2s0_source_config) \
+	XX(I2S1_SOURCE_NUM,			"I2S1_SOURCE",			&i2s1_source_config) \
+	XX(LINEIN_SOURCE_NUM,		"LINEIN_SOURCE",		&linein_source_config) \
+	XX(MEDIA_SOURCE_NUM,		"MEDIA_SOURCE",			&media_source_config) \
+	XX(SPDIF_SOURCE_NUM,		"SPDIF_SOURCE",			&spdif_source_config) \
+	XX(USB_SOURCE_NUM,			"USB_SOURCE",			&usb_source_config) \
+    XX(MIC_SOURCE_NUM,			"MIC_SOURCE",			&mic_source_config) \
+    XX(REMIND_SOURCE_NUM,		"REMIND_SOURCE",		&remind_source_config) \
+    XX(REC_SOURCE_NUM,			"REC_SOURCE",			&rec_source_config) \
+	XX(APP_SOURCE_NUM,			"APP_SOURCE",			NULL)
 
 #define AUDIO_SINK_ENUM_MAP(XX) \
-    XX(AUDIO_DAC0_SINK_NUM,          "DAC0_SINK") \
-    XX(AUDIO_RECORDER_SINK_NUM,      "REC_SINK") \
-    XX(AUDIO_APP_SINK_NUM,           "APP_SINK") \
-    XX(AUDIO_STEREO_SINK_NUM,        "STEREO_SINK") \
-    XX(AUDIO_I2S_MIX_OUT_SINK_NUM,   "I2S_MIX_SINK") \
-    XX(AUDIO_SPDIF_SINK_NUM,         "SPDIF_SINK") \
-    XX(AUDIO_BT_SOURCE_SINK_NUM,     "BT_SOURCE_SINK") \
+    XX(AUDIO_DAC0_SINK_NUM,			"DAC0_SINK",		&dac0_sink_config) \
+    XX(AUDIO_REC_SINK_NUM,			"REC_SINK",			&rec_sink_config) \
+    XX(AUDIO_I2S0_OUT_SINK_NUM,		"I2S0_SINK",		&i2s0_sink_config) \
+    XX(AUDIO_I2S1_OUT_SINK_NUM,		"I2S1_SINK",		&i2s1_sink_config) \
+    XX(AUDIO_SPDIF_SINK_NUM,		"SPDIF_SINK",		&spdif_sink_config) \
+    XX(AUDIO_USB_SINK_NUM,			"USB_SINK",			&usb_sink_config) \
+    XX(AUDIO_BT_SOURCE_SINK_NUM,	"BT_SOURCE_SINK",	&bt_source_sink_config)
 
 typedef enum _AUDIO_CORE_SOURCE_NUM {
-    #define XX_ENUM(name, str) name,
+    #define XX_ENUM(name, str, config_ptr) name,
     AUDIO_SOURCE_ENUM_MAP(XX_ENUM)
     #undef XX_ENUM
     AUDIO_CORE_SOURCE_MAX_NUM
 } AUDIO_CORE_SOURCE_NUM;
 typedef enum _AUDIO_CORE_SINK_NUM {
-    #define XX_ENUM(name, str) name,
+    #define XX_ENUM(name, str, config_ptr) name,
     AUDIO_SINK_ENUM_MAP(XX_ENUM)
     #undef XX_ENUM
     AUDIO_CORE_SINK_MAX_NUM
@@ -115,8 +140,8 @@ typedef struct _AudioEffectParambinContext
 	uint8_t *sub_type_data;
 	uint8_t *flow_data;
 	uint32_t flow_size;
-	uint16_t flow_index;
-	uint16_t param_mode_index;
+//	uint16_t flow_index;
+//	uint16_t param_mode_index;
 }AudioEffectParambinContext;
 
 extern AudioEffectParambinContext AudioEffectParambin;
@@ -139,6 +164,14 @@ void *AudioEffect_Parambin_GetSinkBuffer(AUDIO_CORE_SINK_NUM sink_index);
 int8_t AudioEffect_Parambin_GetSourceEnum(const char *str);
 
 int8_t AudioEffect_Parambin_GetSinkEnum(const char *str);
+
+uint8_t AudioEffect_Parambin_GetSourceBitWidth(AUDIO_CORE_SOURCE_NUM source_index);
+
+uint8_t AudioEffect_Parambin_GetSinkBitWidth(AUDIO_CORE_SINK_NUM sink_index);
+
+uint8_t AudioEffect_Parambin_GetSourceChannelNum(AUDIO_CORE_SOURCE_NUM source_index);
+
+uint8_t AudioEffect_Parambin_GetSinkChannelNum(AUDIO_CORE_SINK_NUM sink_index);
 
 uint16_t AudioEffect_Parambin_GetTotalFlowNum(void);
 
@@ -185,4 +218,6 @@ int16_t* AudioEffect_Parambin_PreSetEffectParam_Get(AUDIO_EFFECT_NAME_NUM effect
 int16_t* AudioEffect_Parambin_PreSetEffectAllParams_Get(AUDIO_EFFECT_NAME_NUM effect_index, AUDIO_EFFECT_PRESET_NUM preset_index);
 
 bool AudioEffect_Parambin_EffectModeIsRunning(uint16_t flow_index, uint16_t param_mode_index);
+
+bool AudioEffect_Parambin_GetEffectListInfoByIndex(uint16_t flow_index, uint16_t param_mode_index, uint32_t *sample_rate, uint32_t *frame_size);
 #endif //__AUDIO_EFFECT_PARAM_BIN_H__

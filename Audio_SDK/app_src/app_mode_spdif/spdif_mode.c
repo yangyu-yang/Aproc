@@ -52,7 +52,7 @@
 void DpllLockReInit(void);
 #endif
 
-extern const char* GetModeNameStr(SysModeNumber Mode);
+//extern const char* GetModeNameStr(SysModeNumber Mode);
 
 #define SPDIF_SOURCE_NUM				APP_SOURCE_NUM
 #define PCM_REMAIN_SMAPLES				3//spdif数据丢声道时,返回数据会超过一帧128，用于缓存数据，试听感更加好
@@ -185,7 +185,7 @@ bool SpdifPlayInit(void)
 		return FALSE;
 	}	
 	
-	DBG("%s Init!\n",GetModeNameStr(GetSystemMode()));
+//	DBG("%s Init!\n",GetModeNameStr(GetSystemMode()));
 
 	SPDIF_ModuleDisable(CFG_SPDIF_MODULE);
 	DMA_ChannelAllocTableSet((uint8_t*)DmaChannelMap);//optical
@@ -275,7 +275,7 @@ bool SpdifPlayInit(void)
 	SPDIF0_AnalogModuleDisable();
 
 #ifdef CFG_APP_OPTICAL_MODE_EN
-	if(GetSystemMode() == ModeOpticalAudioPlay)
+//	if(GetSystemMode() == ModeOpticalAudioPlay)
 	{
 		//spdif config
 		GPIO_PortAModeSet(SPDIF0_OPTICAL_INDEX, SPDIF0_OPTICAL_PORT_MODE);
@@ -493,7 +493,7 @@ void SpdifPlayRun(uint16_t msgId)
 bool SpdifPlayDeinit(void)
 {
 
-	APP_DBG("%s Deinit\n",GetModeNameStr(GetSystemMode()));
+//	APP_DBG("%s Deinit\n",GetModeNameStr(GetSystemMode()));
 	
 	if(SpdifPlayCt == NULL)
 	{

@@ -22,12 +22,12 @@
 
 
 static const EnumStringMap audio_source_map[] = {
-    #define XX_MAP(name, str) {name, str},
+    #define XX_MAP(name, str, config_ptr) {name, str},
     AUDIO_SOURCE_ENUM_MAP(XX_MAP)
     #undef XX_MAP
 };
 static const EnumStringMap audio_sink_map[] = {
-    #define XX_MAP(name, str) {name, str},
+    #define XX_MAP(name, str, config_ptr) {name, str},
     AUDIO_SINK_ENUM_MAP(XX_MAP)
     #undef XX_MAP
 };
@@ -44,26 +44,40 @@ static const EnumStringMap audio_effect_preset_map[] = {
     #undef XX_MAP
 };
 
-static char *AudioEffect_err_str[] = {
-	"ROBOEFFECT_EFFECT_NOT_EXISTED",
-	"ROBOEFFECT_EFFECT_PARAMS_NOT_FOUND",
-	"ROBOEFFECT_INSUFFICIENT_MEMORY",
-	"ROBOEFFECT_EFFECT_INIT_FAILED",
-	"ROBOEFFECT_ILLEGAL_OPERATION",
-	"ROBOEFFECT_EFFECT_LIB_NOT_MATCH_1",
-	"ROBOEFFECT_EFFECT_LIB_NOT_MATCH_2",
-	"ROBOEFFECT_ADDRESS_NOT_EXISTED",
-	"ROBOEFFECT_PARAMS_ERROR",
-	"ROBOEFFECT_FRAME_SIZE_ERROR",
-	"ROBOEFFECT_MEMORY_SIZE_QUERY_ERROR",
-	"ROBOEFFECT_EFFECT_VER_NOT_MATCH_ERROR",
-	"ROBOEFFECT_LIB_VER_NOT_MATCH_ERROR",
-	"ROBOEFFECT_3RD_PARTY_LIB_NOT_MATCH_ERROR",
-	"ROBOEFFECT_PARAMBIN_ERROR",
-	"ROBOEFFECT_CONTEXT_MEMORY_ERROR",
-	"ROBOEFFECT_PARAMBIN_DATA_NOT_FOUND",
-	"ROBOEFFECT_PARAMBIN_DATA_VER_ERROR",
-};
+
+#define AUDIO_EFFECT_ERRORCODE_ENUM_MAP(XX) \
+    XX(ROBOEFFECT_EFFECT_NOT_EXISTED,					"ROBOEFFECT_EFFECT_NOT_EXISTED") \
+    XX(ROBOEFFECT_EFFECT_PARAMS_NOT_FOUND,				"ROBOEFFECT_EFFECT_PARAMS_NOT_FOUND") \
+    XX(ROBOEFFECT_INSUFFICIENT_MEMORY,					"ROBOEFFECT_INSUFFICIENT_MEMORY") \
+    XX(ROBOEFFECT_EFFECT_INIT_FAILED,					"ROBOEFFECT_EFFECT_INIT_FAILED") \
+    XX(ROBOEFFECT_ILLEGAL_OPERATION,					"ROBOEFFECT_ILLEGAL_OPERATION") \
+    XX(ROBOEFFECT_EFFECT_LIB_NOT_MATCH_1,				"ROBOEFFECT_EFFECT_LIB_NOT_MATCH_1") \
+    XX(ROBOEFFECT_EFFECT_LIB_NOT_MATCH_2,				"ROBOEFFECT_EFFECT_LIB_NOT_MATCH_2") \
+    XX(ROBOEFFECT_ADDRESS_NOT_EXISTED,					"ROBOEFFECT_ADDRESS_NOT_EXISTED") \
+    XX(ROBOEFFECT_PARAMS_ERROR,							"ROBOEFFECT_PARAMS_ERROR") \
+    XX(ROBOEFFECT_FRAME_SIZE_ERROR,						"ROBOEFFECT_FRAME_SIZE_ERROR") \
+    XX(ROBOEFFECT_MEMORY_SIZE_QUERY_ERROR,				"ROBOEFFECT_MEMORY_SIZE_QUERY_ERROR") \
+    XX(ROBOEFFECT_EFFECT_VER_NOT_MATCH_ERROR,			"ROBOEFFECT_EFFECT_VER_NOT_MATCH_ERROR") \
+    XX(ROBOEFFECT_LIB_VER_NOT_MATCH_ERROR,				"ROBOEFFECT_LIB_VER_NOT_MATCH_ERROR") \
+    XX(ROBOEFFECT_3RD_PARTY_LIB_NOT_MATCH_ERROR,		"ROBOEFFECT_3RD_PARTY_LIB_NOT_MATCH_ERROR") \
+    XX(ROBOEFFECT_PARAMBIN_ERROR,						"ROBOEFFECT_PARAMBIN_ERROR") \
+    XX(ROBOEFFECT_CONTEXT_MEMORY_ERROR,					"ROBOEFFECT_CONTEXT_MEMORY_ERROR") \
+    XX(ROBOEFFECT_PARAMBIN_DATA_NOT_FOUND,				"ROBOEFFECT_PARAMBIN_DATA_NOT_FOUND") \
+    XX(ROBOEFFECT_PARAMBIN_DATA_VER_ERROR,				"ROBOEFFECT_PARAMBIN_DATA_VER_ERROR") \
+    XX(ROBOEFFECT_MSG_VALUE_NAME_NOT_FOUND,				"ROBOEFFECT_MSG_VALUE_NAME_NOT_FOUND") \
+    XX(ROBOEFFECT_MSG_DATA_ERROR,						"ROBOEFFECT_MSG_DATA_ERROR") \
+    XX(ROBOEFFECT_FLUSH_FIFO_FULL,						"ROBOEFFECT_FLUSH_FIFO_FULL") \
+    XX(ROBOEFFECT_ERROR_OK,								"ROBOEFFECT_ERROR_OK")
+
+const char* audio_effect_errorcode_to_string(ROBOEFFECT_ERROR_CODE error_code) {
+    switch(error_code) {
+        #define XX_CASE(name, str) case name: return str;
+        AUDIO_EFFECT_ERRORCODE_ENUM_MAP(XX_CASE)
+        #undef XX_CASE
+        default: return "UNKNOWN_ERROR_CODE";
+    }
+}
+
 
 AudioEffectParambinContext AudioEffectParambin;
 
@@ -99,12 +113,12 @@ static bool AudioEffect_Parambin_Check(void)
 //		{
 //			roboeffect_parambin_flow_pair *pair = roboeffect_parambin_get_current_flow(AUDIOEFFECT_FLASHBIN_ADDRESS, NULL);
 //			//* DU has only one pair of index
-//			AudioEffectParambin.flow_index = pair[0].flow_index;
-//			AudioEffectParambin.param_mode_index = pair[0].param_mode_index;
+//			mainAppCt.effect_flow_index = pair[0].flow_index;
+//			mainAppCt.effect_param_mode_index = pair[0].param_mode_index;
 //		}
-//		 APP_DBG("FLOW: %d, %d\n", AudioEffectParambin.flow_index, AudioEffectParambin.param_mode_index);
+//		 APP_DBG("FLOW: %d, %d\n", mainAppCt.effect_flow_index, mainAppCt.effect_param_mode_index);
 
-		if((AudioEffectParambin.flow_data = roboeffect_parambin_get_flow_by_index((uint8_t *)AUDIOEFFECT_FLASHBIN_ADDRESS, AudioEffectParambin.flow_index, &AudioEffectParambin.flow_size)) != NULL)
+		if((AudioEffectParambin.flow_data = roboeffect_parambin_get_flow_by_index((uint8_t *)AUDIOEFFECT_FLASHBIN_ADDRESS, mainAppCt.effect_flow_index, &AudioEffectParambin.flow_size)) != NULL)
 		{
 			uint8_t *temp_data, *mode_data_out = NULL, *codec_data_out = NULL;
 			// uint16_t temp_size;
@@ -122,7 +136,7 @@ static bool AudioEffect_Parambin_Check(void)
 			AudioEffectParambin.user_effect_steps = (roboeffect_effect_steps_table *)roboeffect_parambin_get_sub_type((uint8_t *)AudioEffectParambin.flow_data, AudioEffectParambin.flow_size, ROBO_PB_SUBTYPE_FLOW_INFO, TRUE, NULL);
 
 			AudioEffectParambin.sub_type_data = roboeffect_parambin_get_sub_type((uint8_t *)AudioEffectParambin.flow_data, AudioEffectParambin.flow_size, ROBO_PB_SUBTYPE_MODE_PARAMS, TRUE, NULL);
-			roboeffect_parambin_get_mode_data_by_index(AudioEffectParambin.sub_type_data, AudioEffectParambin.param_mode_index, &mode_data_out, &param_size, &codec_data_out, NULL);
+			roboeffect_parambin_get_mode_data_by_index(AudioEffectParambin.sub_type_data, mainAppCt.effect_param_mode_index, &mode_data_out, &param_size, &codec_data_out, NULL);
 //			AudioEffectParambin.user_effect_parameters = mode_data_out;
 			AudioEffectParambin.user_effect_parameters = osPortMalloc(GET_USER_EFFECT_PARAMETERS_TOTAL_LEN(mode_data_out) * sizeof(uint8_t));
 			memcpy(AudioEffectParambin.user_effect_parameters, mode_data_out, GET_USER_EFFECT_PARAMETERS_TOTAL_LEN(mode_data_out) * sizeof(uint8_t));
@@ -208,6 +222,71 @@ int8_t AudioEffect_Parambin_GetSinkEnum(const char *str)
     return (AUDIO_CORE_SINK_NUM)get_enum_value(str, audio_sink_map, size);
 }
 
+//typedef enum _roboeffect_width
+//{
+//	BITS_0  = 0,
+//	BITS_16 = 16,
+//	BITS_24 = 24,
+//	BITS_32 = 32,
+//} roboeffect_width;
+uint8_t AudioEffect_Parambin_GetSourceBitWidth(AUDIO_CORE_SOURCE_NUM source_index)
+{
+	if((AudioEffectParambin.context_memory == NULL) || (source_index < 0 || source_index >= AUDIO_CORE_SOURCE_MAX_NUM))
+		return NULL;
+
+	const roboeffect_io_unit *device_node = AudioEffectParambin.source_io;
+
+	if(((device_node = roboeffect_parambin_get_io_by_name(AudioEffectParambin.context_memory, audio_source_map[source_index].enum_str)) != NULL) && IO_UNIT_VALID(device_node))
+		return device_node->width;
+
+	return 0;
+}
+
+uint8_t AudioEffect_Parambin_GetSinkBitWidth(AUDIO_CORE_SINK_NUM sink_index)
+{
+	if((AudioEffectParambin.context_memory == NULL) || (sink_index < 0 || sink_index >= AUDIO_CORE_SINK_MAX_NUM))
+		return NULL;
+
+	const roboeffect_io_unit *device_node = AudioEffectParambin.sink_io;
+
+	if(((device_node = roboeffect_parambin_get_io_by_name(AudioEffectParambin.context_memory, audio_sink_map[sink_index].enum_str)) != NULL) && IO_UNIT_VALID(device_node))
+		return device_node->width;
+
+	return 0;
+}
+
+//typedef enum _roboeffect_channel
+//{
+//	CH_NONE = 0,
+//	CH_MONO = 1,
+//	CH_STEREO = 2,
+//} roboeffect_channel;
+uint8_t AudioEffect_Parambin_GetSourceChannelNum(AUDIO_CORE_SOURCE_NUM source_index)
+{
+	if((AudioEffectParambin.context_memory == NULL) || (source_index < 0 || source_index >= AUDIO_CORE_SOURCE_MAX_NUM))
+		return NULL;
+
+	const roboeffect_io_unit *device_node = AudioEffectParambin.source_io;
+
+	if(((device_node = roboeffect_parambin_get_io_by_name(AudioEffectParambin.context_memory, audio_source_map[source_index].enum_str)) != NULL) && IO_UNIT_VALID(device_node))
+		return device_node->ch;
+
+	return 0;
+}
+
+uint8_t AudioEffect_Parambin_GetSinkChannelNum(AUDIO_CORE_SINK_NUM sink_index)
+{
+	if((AudioEffectParambin.context_memory == NULL) || (sink_index < 0 || sink_index >= AUDIO_CORE_SINK_MAX_NUM))
+		return NULL;
+
+	const roboeffect_io_unit *device_node = AudioEffectParambin.sink_io;
+
+	if(((device_node = roboeffect_parambin_get_io_by_name(AudioEffectParambin.context_memory, audio_sink_map[sink_index].enum_str)) != NULL) && IO_UNIT_VALID(device_node))
+		return device_node->ch;
+
+	return 0;
+}
+
 uint16_t AudioEffect_Parambin_GetTotalFlowNum(void)
 {
 	roboeffect_parambin_header *hdr_ptr = (roboeffect_parambin_header *)AudioEffect_Parambin_GetFlashEffectAddr();
@@ -240,6 +319,7 @@ bool AudioEffect_Parambin_Init(void)
 {
 	int32_t audioeffect_memory_size = 0;
 	ROBOEFFECT_ERROR_CODE audioeffect_ret;
+	uint32_t framesize_bk;
 
 	if(AudioEffectParambin.context_memory)
 	{
@@ -250,17 +330,19 @@ bool AudioEffect_Parambin_Init(void)
 	roboeffect_prot_init();
 	DataCacheInvalidAll();
 
-	if(!AudioEffect_Parambin_EffectModeIsRunning(AudioEffectParambin.flow_index, AudioEffectParambin.param_mode_index))//just refresh but not init all
+	if(!AudioEffect_Parambin_EffectModeIsRunning(mainAppCt.effect_flow_index, mainAppCt.effect_param_mode_index))//just refresh but not init all
 	{
 		//* check flashbin and set global pointers.
 		AudioEffect_Parambin_Check();
 	}
 
-	audioeffect_memory_size = roboeffect_parambin_estimate_memory_size(AudioEffectParambin.flow_data, AudioEffectParambin.param_mode_index, AudioEffectParambin.user_effect_list);
-	APP_DBG("flow : %s mode:%d memory_size:%ld\n", AudioEffectParambin.flow_data, AudioEffectParambin.param_mode_index, audioeffect_memory_size);
+	framesize_bk = AudioEffectParambin.user_effect_list->frame_size;
+	AudioEffectParambin.user_effect_list->frame_size = roboeffect_parambin_estimate_frame_size(AudioEffectParambin.flow_data, mainAppCt.effect_param_mode_index, AudioEffectParambin.user_effect_list);
+	audioeffect_memory_size = roboeffect_parambin_estimate_memory_size(AudioEffectParambin.flow_data, mainAppCt.effect_param_mode_index, AudioEffectParambin.user_effect_list);
+	APP_DBG("flow : %s mode:%d memory_size:%ld\n", AudioEffectParambin.flow_data, mainAppCt.effect_param_mode_index, audioeffect_memory_size);
 	if(audioeffect_memory_size < 0)
 	{
-		APP_DBG("Get context size failed, Error: %s\n", AudioEffect_err_str[audioeffect_memory_size+256]);
+		APP_DBG("Get context size failed, Error: %s\n", audio_effect_errorcode_to_string(audioeffect_memory_size));
 		return FALSE;
 	}
 	if((AudioEffectParambin.context_memory = osPortMallocFromEnd(audioeffect_memory_size)) == NULL)
@@ -270,9 +352,9 @@ bool AudioEffect_Parambin_Init(void)
 	}
 
 	if(ROBOEFFECT_ERROR_OK != (audioeffect_ret = roboeffect_parambin_init(AudioEffectParambin.context_memory, audioeffect_memory_size,
-			AudioEffectParambin.flow_data, AudioEffectParambin.param_mode_index, AudioEffectParambin.user_effect_list)) )
+			AudioEffectParambin.flow_data, mainAppCt.effect_param_mode_index, AudioEffectParambin.user_effect_list)) )
 	{
-		APP_DBG("roboeffect_init failed. Error: %s\n", AudioEffect_err_str[audioeffect_ret+256]);
+		APP_DBG("roboeffect_init failed. Error: %s\n", audio_effect_errorcode_to_string(audioeffect_ret));
 		osPortFree(AudioEffectParambin.context_memory);
 		AudioEffectParambin.context_memory = NULL;
 		return FALSE;
@@ -281,10 +363,11 @@ bool AudioEffect_Parambin_Init(void)
 	//After effect init done, AudioCore know what frame size should be set.
 	for(uint8_t net = 0; net < MaxNet; net++)
 	{
-		AudioCoreFrameSizeSet(net, roboeffect_parambin_estimate_frame_size(AudioEffectParambin.flow_data, AudioEffectParambin.param_mode_index, AudioEffectParambin.user_effect_list));
+		AudioCoreFrameSizeSet(net, AudioEffectParambin.user_effect_list->frame_size);
 		AudioCoreMixSampleRateSet(net, AudioEffectParambin.user_effect_list->sample_rate);
 		APP_DBG("set net %d samplerate:%ld, framesize:%d\n", net , AudioCoreMixSampleRateGet(net), AudioCoreFrameSizeGet(net));
 	}
+	AudioEffectParambin.user_effect_list->frame_size = framesize_bk;    //reset for other param mode in same flow
 
 	APP_DBG("Roboeffect init done!\n");
 	/*********************************************************debug info**********************************************************************/
@@ -303,16 +386,18 @@ bool AudioEffect_Parambin_Init(void)
 //		if(IO_UNIT_VALID(device_node))
 //			APP_DBG("sink %d, %s\n", i, roboeffect_parambin_get_io_name(AudioEffectParambin.context_memory, IO_UNIT_ID(device_node)));
 //	}
-
+//
 //	for(uint8_t i = 0; i < AUDIO_CORE_SOURCE_MAX_NUM; i++)
 //	{
 //		if(AudioEffect_Parambin_GetSourceBuffer(i))
-//			APP_DBG("source %d buf ok\n", i);
+//			APP_DBG("source %d buf ok, width:%d, ch:%d\n", i,
+//					AudioEffect_Parambin_GetSourceBitWidth(i), AudioEffect_Parambin_GetSourceChannelNum(i));
 //	}
 //	for(uint8_t i = 0; i < AUDIO_CORE_SINK_MAX_NUM; i++)
 //	{
 //		if(AudioEffect_Parambin_GetSinkBuffer(i))
-//			APP_DBG("sink %d buf ok\n", i);
+//			APP_DBG("sink %d buf ok, width:%d, ch:%d\n", i,
+//					AudioEffect_Parambin_GetSinkBitWidth(i), AudioEffect_Parambin_GetSinkChannelNum(i));
 //	}
 //	uint8_t *Hwct = AudioEffect_Parambin_GetCurHardwareConfig();
 //	for(uint8_t i = 0; i < 200;)
@@ -491,7 +576,7 @@ uint8_t *AudioEffect_Parambin_GetTempEffectParamByAddr(uint8_t effect_addr)
 uint8_t *AudioEffect_Parambin_GetFlashEffectParamByAddr(uint8_t effect_addr)
 {
 	uint8_t *effectParams = NULL;
-	roboeffect_parambin_get_mode_data_by_index(AudioEffectParambin.sub_type_data, AudioEffectParambin.param_mode_index, &effectParams, NULL, NULL, NULL);
+	roboeffect_parambin_get_mode_data_by_index(AudioEffectParambin.sub_type_data, mainAppCt.effect_param_mode_index, &effectParams, NULL, NULL, NULL);
 
     if(effect_addr == 0)
     {
@@ -709,8 +794,8 @@ void AudioEffect_Parambin_SwitchEffectModeByIndex(uint16_t flow_index, uint16_t 
 	{
 		if(param_mode_index < AudioEffect_Parambin_GetTotalParamNumInFlow(flow_index))
 		{
-			AudioEffectParambin.flow_index = flow_index;
-			AudioEffectParambin.param_mode_index = param_mode_index;
+			mainAppCt.effect_flow_index = flow_index;
+			mainAppCt.effect_param_mode_index = param_mode_index;
 		}
 		else
 		{
@@ -731,8 +816,8 @@ void AudioEffect_Parambin_SwitchEffectModeByIndex(uint16_t flow_index, uint16_t 
 //    uint16_t param_target = 0;
 //    uint16_t max_flows = AudioEffect_Parambin_GetTotalFlowNum();
 //    bool found_mode = FALSE;
-//    uint16_t original_flow = AudioEffectParambin.flow_index;
-//    uint16_t original_param = AudioEffectParambin.param_mode_index;
+//    uint16_t original_flow = mainAppCt.effect_flow_index;
+//    uint16_t original_param = mainAppCt.effect_param_mode_index;
 //
 //    // 如果传入的模式名称为空，则直接返回
 //    if (mode_name == NULL || strlen(mode_name) == 0)
@@ -754,8 +839,8 @@ void AudioEffect_Parambin_SwitchEffectModeByIndex(uint16_t flow_index, uint16_t 
 //            if (flow_name && strcmp(mode_name, flow_name) == 0)
 //            {
 //                // 切换到目标模式
-//                AudioEffectParambin.flow_index = flow_target;
-//                AudioEffectParambin.param_mode_index = param_target;
+//                mainAppCt.effect_flow_index = flow_target;
+//                mainAppCt.effect_param_mode_index = param_target;
 //                found_mode = TRUE;
 //                break;
 //            }
@@ -776,8 +861,8 @@ void AudioEffect_Parambin_SwitchEffectModeByIndex(uint16_t flow_index, uint16_t 
 //    else
 //    {
 //        // 如果没有找到目标模式，恢复原始状态
-//        AudioEffectParambin.flow_index = original_flow;
-//        AudioEffectParambin.param_mode_index = original_param;
+//        mainAppCt.effect_flow_index = original_flow;
+//        mainAppCt.effect_param_mode_index = original_param;
 //        APP_DBG("Mode '%s' not found, restored to original mode.\n", mode_name);
 //    }
 //}
@@ -790,8 +875,8 @@ void AudioEffect_Parambin_SwitchEffectModeByName(const char *mode_name)
 	uint16_t param_target = 0;
 	uint16_t max_flows = AudioEffect_Parambin_GetTotalFlowNum();
 	bool found_mode = FALSE;
-	uint16_t original_flow = AudioEffectParambin.flow_index;
-	uint16_t original_param = AudioEffectParambin.param_mode_index;
+	uint16_t original_flow = mainAppCt.effect_flow_index;
+	uint16_t original_param = mainAppCt.effect_param_mode_index;
 	uint8_t *flow_data;
 	uint32_t flow_size = 0;
 
@@ -819,8 +904,8 @@ void AudioEffect_Parambin_SwitchEffectModeByName(const char *mode_name)
             if (mode_data_by_name && mode_data_by_index && (mode_data_by_name == mode_data_by_index))
             {
                 // 切换到目标模式
-                AudioEffectParambin.flow_index = flow_target;
-                AudioEffectParambin.param_mode_index = param_target;
+                mainAppCt.effect_flow_index = flow_target;
+                mainAppCt.effect_param_mode_index = param_target;
                 found_mode = TRUE;
                 break;
             }
@@ -841,8 +926,8 @@ void AudioEffect_Parambin_SwitchEffectModeByName(const char *mode_name)
 	else
 	{
 		// 如果没有找到目标模式，恢复原始状态
-		AudioEffectParambin.flow_index = original_flow;
-		AudioEffectParambin.param_mode_index = original_param;
+		mainAppCt.effect_flow_index = original_flow;
+		mainAppCt.effect_param_mode_index = original_param;
 		APP_DBG("Mode '%s' not found, restored to original mode.\n", mode_name);
 	}
 }
@@ -953,4 +1038,46 @@ bool AudioEffect_Parambin_EffectModeIsRunning(uint16_t flow_index, uint16_t para
 		}
 	}
 	return FALSE;
+}
+
+bool AudioEffect_Parambin_GetEffectListInfoByIndex(uint16_t flow_index, uint16_t param_mode_index, uint32_t *sample_rate, uint32_t *frame_size)
+{
+	uint32_t AUDIOEFFECT_FLASHBIN_ADDRESS = AudioEffect_Parambin_GetFlashEffectAddr();
+	uint8_t *flow_data;
+	roboeffect_effect_list_info *user_effect_list = NULL;
+	uint8_t *sub_type_data;
+	uint8_t *user_effect_parameters;
+
+	if(roboeffect_parambin_check_whole_bin((uint8_t *)AUDIOEFFECT_FLASHBIN_ADDRESS, NULL) == ROBOEFFECT_ERROR_OK)
+	{
+		uint32_t param_size = 0;
+		uint32_t flow_size = 0;
+
+		if((flow_data = roboeffect_parambin_get_flow_by_index((uint8_t *)AUDIOEFFECT_FLASHBIN_ADDRESS, flow_index, &flow_size)) != NULL)
+		{
+			roboeffect_parambin_get_sub_type((uint8_t *)flow_data, flow_size, ROBO_PB_SUBTYPE_SCRIPT, FALSE, NULL);
+			user_effect_list = (roboeffect_effect_list_info *)roboeffect_parambin_get_sub_type((uint8_t *)flow_data, flow_size, ROBO_PB_SUBTYPE_EFFECTS_INFO, TRUE, NULL);
+			sub_type_data = roboeffect_parambin_get_sub_type((uint8_t *)flow_data, flow_size, ROBO_PB_SUBTYPE_MODE_PARAMS, TRUE, NULL);
+			roboeffect_parambin_get_mode_data_by_index(sub_type_data, param_mode_index, &user_effect_parameters, &param_size, NULL, NULL);
+
+			if(user_effect_list && sub_type_data && user_effect_parameters)
+			{
+//				APP_DBG("[AudioEffect_Parambin] AudioEffect_Parambin_Check ok!\n");
+			}
+			else
+			{
+				APP_DBG("[AudioEffect_Parambin] WARNING! Parambin_Check have null pointer!\n");
+				return FALSE;
+			}
+		}
+	}
+	else
+	{
+		APP_DBG("[AudioEffect_Parambin] ERROR! Parambin_Check failed!\n");
+		return FALSE;
+	}
+
+	*sample_rate = user_effect_list->sample_rate;
+	*frame_size = roboeffect_parambin_estimate_frame_size(flow_data, param_mode_index, user_effect_list);
+	return true;
 }

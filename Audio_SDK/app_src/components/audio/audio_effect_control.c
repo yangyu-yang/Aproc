@@ -27,29 +27,29 @@ void AudioEffect_Parambin_EffectModeAutoSwitch(void)
     uint16_t param_target = 0;
     uint16_t max_flows = AudioEffect_Parambin_GetTotalFlowNum();
     bool found_valid_flow = FALSE;
-    uint16_t original_flow = AudioEffectParambin.flow_index;
-    uint16_t original_param = AudioEffectParambin.param_mode_index;
+    uint16_t original_flow = mainAppCt.effect_flow_index;
+    uint16_t original_param = mainAppCt.effect_param_mode_index;
 
     // 循环查找符合条件的模式
     do {
         // 基础索引递增逻辑
-        if (AudioEffectParambin.param_mode_index >= (AudioEffect_Parambin_GetTotalParamNumInFlow(AudioEffectParambin.flow_index) - 1))
+        if (mainAppCt.effect_param_mode_index >= (AudioEffect_Parambin_GetTotalParamNumInFlow(mainAppCt.effect_flow_index) - 1))
         {
-            if (AudioEffectParambin.flow_index >= (max_flows - 1))
+            if (mainAppCt.effect_flow_index >= (max_flows - 1))
             {
                 flow_target = 0;
                 param_target = 0;
             }
             else
             {
-                flow_target = AudioEffectParambin.flow_index + 1;
+                flow_target = mainAppCt.effect_flow_index + 1;
                 param_target = 0;
             }
         }
         else
         {
-            flow_target = AudioEffectParambin.flow_index;
-            param_target = AudioEffectParambin.param_mode_index + 1;
+            flow_target = mainAppCt.effect_flow_index;
+            param_target = mainAppCt.effect_param_mode_index + 1;
         }
 
         // 检查是否为hfp模式
@@ -57,12 +57,12 @@ void AudioEffect_Parambin_EffectModeAutoSwitch(void)
         if (flow_name && (strcmp("hfp", flow_name) == 0))
         {
             // 保存当前索引并尝试下一个
-            AudioEffectParambin.flow_index = flow_target;
-            AudioEffectParambin.param_mode_index = param_target;
+            mainAppCt.effect_flow_index = flow_target;
+            mainAppCt.effect_param_mode_index = param_target;
 
             // 边界检查：如果遍历完所有模式仍未找到有效值
-            if (AudioEffectParambin.flow_index == original_flow &&
-                AudioEffectParambin.param_mode_index == original_param)
+            if (mainAppCt.effect_flow_index == original_flow &&
+                mainAppCt.effect_param_mode_index == original_param)
             {
                 APP_DBG("All flows are hfp, no valid mode found!\n");
                 break;
@@ -83,11 +83,10 @@ void AudioEffect_Parambin_EffectModeAutoSwitch(void)
     else
     {
         // 恢复原始状态
-        AudioEffectParambin.flow_index = original_flow;
-        AudioEffectParambin.param_mode_index = original_param;
+        mainAppCt.effect_flow_index = original_flow;
+        mainAppCt.effect_param_mode_index = original_param;
     }
 
-	AudioEffect_EffectMode_Refresh();
 }
 
 void AudioEffect_EffectMode_Refresh(void)
@@ -129,7 +128,7 @@ void AudioEffect_Params_Sync(void)
 	if(AudioEffectParambin.context_memory == NULL)
 		return;
 
-	AudioAPPDigitalGianProcess(mainAppCt.SysCurrentMode);
+//	AudioAPPDigitalGianProcess(mainAppCt.SysCurrentMode);
 	SystemVolSet();
 #ifdef CFG_FUNC_MUSIC_EQ_MODE_EN
 	AudioEffect_EqMode_Set(mainAppCt.EqMode);

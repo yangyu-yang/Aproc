@@ -11,7 +11,6 @@
 #include "remind_sound.h"
 #include "ctrlvars.h"
 #include "bt_manager.h"
-#include "mode_task.h"
 #include "bt_hf_api.h"
 #include "audio_effect_process.h"
 

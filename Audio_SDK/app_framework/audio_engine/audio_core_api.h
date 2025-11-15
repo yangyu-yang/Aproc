@@ -69,6 +69,7 @@ typedef struct _AudioCoreSource
 	bool						LeftMuteFlag;//静音标志
 	bool						RightMuteFlag;//静音标志
 	bool						MuteFlagbk;//静音标志
+	bool						FrameReady;//播放标志
 	bool						Active;//混音组合的数据/空间帧完备，发起AudioProcessMain，此通路激活。
 	MIX_NET						Net;//缺省DefaultNet/0,  使能条件下同步帧输入和输出
 	AUDIO_ADAPT					Adapt;//缺省:STD,通路采样和微调功能设置

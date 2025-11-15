@@ -20,7 +20,6 @@ extern "C" {
 #endif//__cplusplus
 
 #include "timeout.h"
-#include "mode_task.h"
 #include "app_message.h"
 
 
@@ -64,7 +63,7 @@ typedef struct _DeviceDetMsgTable
 {
 	MessageId MsgID;
 	uint32_t SupportMode;
-	SysModeNumber EnterMode;
+//	SysModeNumber EnterMode;
 }DeviceEventMsgTable;
 
 bool IsUDiskLink(void);

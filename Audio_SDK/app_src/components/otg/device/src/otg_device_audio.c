@@ -903,10 +903,10 @@ static uint32_t FramCount = 0;
 void UsbAudioTimer1msProcess(void)
 {
 #ifndef CFG_FUNC_USB_AUDIO_MIX_MODE
-	if(GetSystemMode() != ModeUsbDevicePlay)
-	{
-		return;
-	}
+//	if(GetSystemMode() != ModeUsbDevicePlay)
+//	{
+//		return;
+//	}
 #else
 	if(!GetUSBDeviceInitState())
 	{

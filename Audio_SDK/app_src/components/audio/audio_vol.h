@@ -19,7 +19,6 @@ extern "C" {
 #endif//__cplusplus
 
 #include "app_config.h"
-#include "mode_task.h"
 
 #if (BT_AVRCP_VOLUME_SYNC) && defined(CFG_APP_BT_MODE_EN)
 	#define CFG_PARA_MAX_VOLUME_NUM		        (16)	//SDK 16 级音量,针对iphone手机蓝牙音量同步功能定制，音量表16级能一一对应手机端音量级别
@@ -29,7 +28,7 @@ extern "C" {
 	#define CFG_PARA_SYS_VOLUME_DEFAULT			(32)	//SDK默认音量
 #endif
 
-void AudioAPPDigitalGianProcess(SysModeNumber AppMode);
+//void AudioAPPDigitalGianProcess(SysModeNumber AppMode);
 bool IsAudioPlayerMute(void);
 void AudioPlayerMenu(void);
 void AudioPlayerMenuCheck(void);

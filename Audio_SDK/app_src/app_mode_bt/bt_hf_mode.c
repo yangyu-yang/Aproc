@@ -507,8 +507,8 @@ bool BtHfInit(void)
 
 //	gBtHfCt->SystemEffectMode = mainAppCt.EffectMode;	//保存EffectMode，退出HFP模式以后需要恢复
 //	mainAppCt.EffectMode = EFFECT_MODE_HFP_AEC;
-	gBtHfCt->SystemEffectFlowIndex = AudioEffectParambin.flow_index;
-	gBtHfCt->SystemEffectParamModeIndex = AudioEffectParambin.param_mode_index;
+	gBtHfCt->SystemEffectFlowIndex = mainAppCt.effect_flow_index;
+	gBtHfCt->SystemEffectParamModeIndex = mainAppCt.effect_param_mode_index;
 	AudioEffect_Parambin_SwitchEffectModeByName("Hfp");
 
 	if(!AudioIoCommonForHfp(BT_HFP_MIC_PGA_GAIN))
@@ -895,8 +895,8 @@ bool BtHfDeinit(void)
 
 	ModeCommonDeinit();//mic dac 清理 等待下一个模式重配
 //	mainAppCt.EffectMode = gBtHfCt->SystemEffectMode;	//恢复EffectMode
-	AudioEffectParambin.flow_index = gBtHfCt->SystemEffectFlowIndex;
-	AudioEffectParambin.param_mode_index = gBtHfCt->SystemEffectParamModeIndex;
+	mainAppCt.effect_flow_index = gBtHfCt->SystemEffectFlowIndex;
+	mainAppCt.effect_param_mode_index = gBtHfCt->SystemEffectParamModeIndex;
 
 	gCtrlVars.AutoRefresh = AutoRefresh_ALL_EFFECTS_PARA;
 

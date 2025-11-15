@@ -52,18 +52,18 @@ static int32_t Cnt = -1;
 uint8_t ChannelValid[ AUDIO_CORE_SOURCE_MAX_NUM + AUDIO_CORE_SINK_MAX_NUM] = {0};
 extern HDMIInfo *gHdmiCt;
 TIMER MenuTimer;//菜单键 时间控制，如果超过一定时间无相关按键触发，关闭菜单功能。
-
-static const int16_t AudioModeDigitalGianTable[][2]=
-{
-	{ModeBtAudioPlay,		0/*dB*/},
-	{ModeUDiskAudioPlay,	0/*dB*/},
-	{ModeUsbDevicePlay,		0/*dB*/},
-	{ModeCardAudioPlay,		0/*dB*/},
-	{ModeLineAudioPlay,		0/*dB*/},
-	{ModeI2SInAudioPlay,	0/*dB*/},
-	{ModeOpticalAudioPlay,	0/*dB*/},
-	{ModeCoaxialAudioPlay,	0/*dB*/},
-};
+//
+//static const int16_t AudioModeDigitalGianTable[][2]=
+//{
+//	{ModeBtAudioPlay,		0/*dB*/},
+//	{ModeUDiskAudioPlay,	0/*dB*/},
+//	{ModeUsbDevicePlay,		0/*dB*/},
+//	{ModeCardAudioPlay,		0/*dB*/},
+//	{ModeLineAudioPlay,		0/*dB*/},
+//	{ModeI2SInAudioPlay,	0/*dB*/},
+//	{ModeOpticalAudioPlay,	0/*dB*/},
+//	{ModeCoaxialAudioPlay,	0/*dB*/},
+//};
 
 uint8_t gBtAbsVolTable[17]={
 	0x00, 0x07, 0x0f, 0x17, 0x1f, 0x27, 0x2f, 0x37, 0x3f, 0x47,
@@ -74,22 +74,22 @@ uint8_t gBtAbsVolSetTable[17]={
 	0x50, 0x58, 0x60, 0x68, 0x70, 0x78, 0x7f};
 
 //app通路数字预增益处理
-void AudioAPPDigitalGianProcess(SysModeNumber AppMode)
-{
-	uint32_t i;
-	int16_t preGain = 0;
-
-	for(i = 0; i < sizeof(AudioModeDigitalGianTable)/(sizeof(int16_t)*2); i++)
-	{
-		if(AppMode == AudioModeDigitalGianTable[i][0])
-		{
-			preGain = AudioModeDigitalGianTable[i][1] * 100;
-			DBG("CurMode preGain = %d dB\n", AudioModeDigitalGianTable[i][1]);
-		}
-	}
-
-	AudioEffect_Parambin_EffectParam_Set(EFFECT_PREGAIN, INDEX_GAIN_CONTROL_GAIN, preGain);
-}
+//void AudioAPPDigitalGianProcess(SysModeNumber AppMode)
+//{
+//	uint32_t i;
+//	int16_t preGain = 0;
+//
+//	for(i = 0; i < sizeof(AudioModeDigitalGianTable)/(sizeof(int16_t)*2); i++)
+//	{
+//		if(AppMode == AudioModeDigitalGianTable[i][0])
+//		{
+//			preGain = AudioModeDigitalGianTable[i][1] * 100;
+//			DBG("CurMode preGain = %d dB\n", AudioModeDigitalGianTable[i][1]);
+//		}
+//	}
+//
+//	AudioEffect_Parambin_EffectParam_Set(EFFECT_PREGAIN, INDEX_GAIN_CONTROL_GAIN, preGain);
+//}
 
 int16_t AudioVol_Volume_Get(int8_t vol)
 {

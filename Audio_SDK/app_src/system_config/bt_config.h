@@ -24,7 +24,7 @@
  * 蓝牙功能开关(经典蓝牙BT和低功耗蓝牙BLE模块)
  *****************************************************************/
 #define BLE_SUPPORT					DISABLE
-#define BT_SUPPORT			        DISABLE
+#define BT_SUPPORT			        DISABLE//ENABLE
 
 /*****************************************************************
  * 蓝牙发射功能配置
@@ -106,8 +106,8 @@ enum
 /*****************************************************************
  * 蓝牙协议宏定义开关
  *****************************************************************/
-#define BT_A2DP_SUPPORT				(1)		//音乐播放和控制(A2DP和AVRCP关联)
-#define BT_HFP_SUPPORT				(1)		//通话功能
+#define BT_A2DP_SUPPORT				(0)		//音乐播放和控制(A2DP和AVRCP关联)
+#define BT_HFP_SUPPORT				(0)		//通话功能
 #define BT_SPP_SUPPORT				(0)		//数据传输
 #define BT_OBEX_SUPPORT				(0)		//文件传输(适用于安卓手机通过文件推送进行OTA升级)
 #define BT_PBAP_SUPPORT				(0)		//电话本

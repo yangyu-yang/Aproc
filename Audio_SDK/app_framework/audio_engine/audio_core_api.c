@@ -244,22 +244,22 @@ void AudioProcessMain(void)
 		}
 	}
 #endif
-	if(AudioCore.AudioSource[APP_SOURCE_NUM].Active == TRUE)////music buff
-	{
-		#if (BT_HFP_SUPPORT) && defined(CFG_APP_BT_MODE_EN)
-		if(GetSystemMode() != ModeBtHfPlay)
-		#endif
-		{
-			if(AudioCore.AudioSource[APP_SOURCE_NUM].Channels == 1)
-			{
-				uint16_t i;
-				for(i = SOURCEFRAME(APP_SOURCE_NUM) * 2 - 1; i > 0; i--)
-				{
-					AudioCore.AudioSource[APP_SOURCE_NUM].PcmInBuf[i] = AudioCore.AudioSource[APP_SOURCE_NUM].PcmInBuf[i / 2];
-				}
-			}
-		}
-	}	
+//	if(AudioCore.AudioSource[APP_SOURCE_NUM].Active == TRUE)////music buff
+//	{
+//		#if (BT_HFP_SUPPORT) && defined(CFG_APP_BT_MODE_EN)
+//		if(GetSystemMode() != ModeBtHfPlay)
+//		#endif
+//		{
+//			if(AudioCore.AudioSource[APP_SOURCE_NUM].Channels == 1)
+//			{
+//				uint16_t i;
+//				for(i = SOURCEFRAME(APP_SOURCE_NUM) * 2 - 1; i > 0; i--)
+//				{
+//					AudioCore.AudioSource[APP_SOURCE_NUM].PcmInBuf[i] = AudioCore.AudioSource[APP_SOURCE_NUM].PcmInBuf[i / 2];
+//				}
+//			}
+//		}
+//	}
 		
 #if defined(CFG_FUNC_REMIND_SOUND_EN)
 	if(AudioCore.AudioSource[REMIND_SOURCE_NUM].Active == TRUE)////remind buff
@@ -315,7 +315,8 @@ void AudioCoreSourceMuteApply(void)
 
 	for(source_index = 0; source_index < AUDIO_CORE_SOURCE_MAX_NUM; source_index++)
 	{
-		mute = AudioCore.AudioSource[source_index].LeftMuteFlag || AudioCore.AudioSource[source_index].RightMuteFlag || mainAppCt.gSysVol.MuteFlag;
+		mute = AudioCore.AudioSource[source_index].LeftMuteFlag || AudioCore.AudioSource[source_index].RightMuteFlag || mainAppCt.gSysVol.MuteFlag
+				|| IsAudioCorePause || (!AudioCore.AudioSource[source_index].FrameReady);
 		if((!AudioCore.AudioSource[source_index].Active) || (!AudioCore.AudioSource[source_index].Enable) || (mute == AudioCore.AudioSource[source_index].MuteFlagbk))
 		{
 //			if(AudioCoreSourceToRoboeffect(source_index) != AUDIOCORE_SOURCE_SINK_ERROR)
@@ -327,6 +328,7 @@ void AudioCoreSourceMuteApply(void)
 //					memset(roboeffect_get_source_buffer(AudioEffect.context_memory, AudioCoreSourceToRoboeffect(source_index)),
 //										0, roboeffect_get_buffer_size(AudioEffect.context_memory));
 					memset(AudioEffect_Parambin_GetSourceBuffer(source_index), 0, roboeffect_get_buffer_size(AudioEffectParambin.context_memory));
+					AudioCore.AudioSource[source_index].FrameReady = FALSE;
 				}
 			}
 			AudioCore.AudioSource[source_index].MuteFlagbk = mute;
@@ -402,7 +404,7 @@ void AudioCoreSinkMuteApply(void)
 
 	for(sink_index = 0; sink_index < AUDIO_CORE_SINK_MAX_NUM; sink_index++)
 	{
-		mute = AudioCore.AudioSink[sink_index].LeftMuteFlag || AudioCore.AudioSink[sink_index].RightMuteFlag || mainAppCt.gSysVol.MuteFlag;
+		mute = AudioCore.AudioSink[sink_index].LeftMuteFlag || AudioCore.AudioSink[sink_index].RightMuteFlag || mainAppCt.gSysVol.MuteFlag || IsAudioCorePause;
 		if((!AudioCore.AudioSink[sink_index].Active) || (!AudioCore.AudioSink[sink_index].Enable) || (mute == AudioCore.AudioSink[sink_index].MuteFlagbk))
 		{
 //			if(AudioCoreSinkToRoboeffect(sink_index) != AUDIOCORE_SOURCE_SINK_ERROR)

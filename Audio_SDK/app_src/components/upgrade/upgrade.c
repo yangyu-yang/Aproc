@@ -38,7 +38,8 @@ void report_up_grate()
 
 void start_up_grate(ResourceType UpdateResource)
 {
-	if(GetSysModeState(ModeCardAudioPlay)!=ModeStateSusend && (UpdateResource == SysResourceCard))
+//	if(GetSysModeState(ModeCardAudioPlay)!=ModeStateSusend && (UpdateResource == SysResourceCard))
+	if(UpdateResource == SysResourceCard)
 	{
 		//挂载检测指定的mva包存在，
 		#if CFG_RES_CARD_GPIO == SDIO_A15_A16_A17
@@ -47,7 +48,8 @@ void start_up_grate(ResourceType UpdateResource)
 		SREG_BOOT_REGISTER.sParam = CHN_MASK_SDCARD1;
 		#endif
 	}
-	else if(GetSysModeState(ModeUDiskAudioPlay)!=ModeStateSusend && (UpdateResource == SysResourceUDisk))
+//	else if(GetSysModeState(ModeUDiskAudioPlay)!=ModeStateSusend && (UpdateResource == SysResourceUDisk))
+	else if(UpdateResource == SysResourceUDisk)
 	{
 		//挂载检测指定的mva包存在，
 		SREG_BOOT_REGISTER.sParam = CHN_MASK_UDISK;

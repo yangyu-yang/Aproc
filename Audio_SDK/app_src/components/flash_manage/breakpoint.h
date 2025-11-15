@@ -10,7 +10,6 @@
 #define __BREAKPOINT_H__
 
 #include "app_config.h"
-#include "mode_task.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -160,7 +159,7 @@ void BP_InfoLog(void);
 void BP_LoadInfo(void);
 void* BP_GetInfo(BP_INFO_TYPE InfoType);
 bool BP_SaveInfo(uint32_t Device);
-uint32_t BPDiskFileResearch(SysModeNumber DiskMode, uint16_t *PlayTime);
+//uint32_t BPDiskFileResearch(SysModeNumber DiskMode, uint16_t *PlayTime);
 void BackupInfoUpdata(BACKUP_MODE mode);
 
 #endif

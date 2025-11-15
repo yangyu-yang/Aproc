@@ -50,7 +50,7 @@ const static BP_SYS_INFO sInitSysInfo =
 #ifdef CFG_APP_BT_MODE_EN
 	(uint8_t)ModeBtAudioPlay,                // CurModuleId
 #else
-	(uint8_t)ModeUDiskAudioPlay,             // CurModuleId
+	0,//(uint8_t)ModeUDiskAudioPlay,             // CurModuleId
 #endif
 	CFG_PARA_SYS_VOLUME_DEFAULT,     			//Music Volume default value
 	
@@ -735,21 +735,21 @@ void DiskSongSearchBP(DIR *dir, FILINFO *finfo, ff_acc_node *acc_node)
 
 	if(IsFindBpSongFlag == FALSE)
 	{
-		if(GetSystemMode() == ModeCardAudioPlay)
-		{
-			//APP_DBG("\n");
-			//APP_DBG("BP file size = %d, sect = %d, clust = %d\n", BpPlayInfo->PlayCardInfo.FileSize, BpPlayInfo->PlayCardInfo.DirSect, BpPlayInfo->PlayCardInfo.FirstClust);
-			if((BpPlayInfo->PlayCardInfo.DirSect == (uint32_t)dir->sect)
-			&& (BpPlayInfo->PlayCardInfo.FirstClust == (uint32_t)finfo->fcl)
-			&& (BpPlayInfo->PlayCardInfo.FileSize == (uint32_t)finfo->fsize))
-			{
-				IsFindBpSongFlag = TRUE;
-				PlaySoneNum = acc_node->prior_files_amount;//only test
-				PlayTime = BpPlayInfo->PlayCardInfo.PlayTime;
-				APP_DBG("Find BP Song, num = %d\n", (int)PlaySoneNum);
-			}
-		}
-		else
+//		if(GetSystemMode() == ModeCardAudioPlay)
+//		{
+//			//APP_DBG("\n");
+//			//APP_DBG("BP file size = %d, sect = %d, clust = %d\n", BpPlayInfo->PlayCardInfo.FileSize, BpPlayInfo->PlayCardInfo.DirSect, BpPlayInfo->PlayCardInfo.FirstClust);
+//			if((BpPlayInfo->PlayCardInfo.DirSect == (uint32_t)dir->sect)
+//			&& (BpPlayInfo->PlayCardInfo.FirstClust == (uint32_t)finfo->fcl)
+//			&& (BpPlayInfo->PlayCardInfo.FileSize == (uint32_t)finfo->fsize))
+//			{
+//				IsFindBpSongFlag = TRUE;
+//				PlaySoneNum = acc_node->prior_files_amount;//only test
+//				PlayTime = BpPlayInfo->PlayCardInfo.PlayTime;
+//				APP_DBG("Find BP Song, num = %d\n", (int)PlaySoneNum);
+//			}
+//		}
+//		else
 		{
 			//APP_DBG("\n");
 			//APP_DBG("BP file size = %d, sect = %d, clust = %d\n", BpPlayInfo->PlayUDiskInfo.FileSize, BpPlayInfo->PlayUDiskInfo.DirSect, BpPlayInfo->PlayUDiskInfo.FirstClust);

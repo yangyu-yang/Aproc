@@ -448,14 +448,16 @@ DetectCardExit:
 			{
 				Ret |= USB_DEVICE_IN_EVENT_BIT;
 #if defined(CFG_FUNC_AUDIO_EFFECT_EN)&&defined(CFG_COMMUNICATION_BY_USB)
-				if(((GetModeDefineState(ModeUsbDevicePlay)) ||(!GetModeDefineState(ModeUsbDevicePlay)))
-					&& (GetUSBDeviceInitState() == FALSE))
+//				if(((GetModeDefineState(ModeUsbDevicePlay)) ||(!GetModeDefineState(ModeUsbDevicePlay)))
+//					&& (GetUSBDeviceInitState() == FALSE))
+				if (GetUSBDeviceInitState() == FALSE)
 				{
 					OTG_DeviceModeSel(HID, USB_VID, USBPID(HID));
 					OTG_DeviceFifoInit();
 					OTG_DeviceInit();
 					SetUSBDeviceInitState(TRUE);
 //					gCtrlVars.AutoRefresh = AutoRefresh_ALL_PARA;
+					APP_DBG("OTG_DeviceInit done!\n");
 				}
 #endif
 			}
@@ -696,8 +698,8 @@ void BreakPointSave(uint16_t device_msgId)
 #endif
 //			if(mainAppCt.EffectMode != EFFECT_MODE_HFP_AEC)//蓝牙通话模式下，不保存音效模式
 			{
-				pBpSysInfo->AudioEffectParambin_flow   = AudioEffectParambin.flow_index;
-				pBpSysInfo->AudioEffectParambin_paramMode = AudioEffectParambin.param_mode_index;
+				pBpSysInfo->AudioEffectParambin_flow   = mainAppCt.effect_flow_index;
+				pBpSysInfo->AudioEffectParambin_paramMode = mainAppCt.effect_param_mode_index;
 			}
 			pBpSysInfo->MicVolume    = mainAppCt.MicVolume;
 #ifdef CFG_FUNC_MUSIC_EQ_MODE_EN

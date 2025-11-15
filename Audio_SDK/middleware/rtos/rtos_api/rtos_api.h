@@ -140,7 +140,7 @@ extern osMutexId UART1Mutex;
 //extern osMutexId AudioEffectMutex;
 //extern osMutexId LoadAudioParamMutex;
 extern osMutexId SbcDecoderMutex;
-extern osMutexId SysModeMutex;
+//extern osMutexId SysModeMutex;
 extern osMutexId RemindMutex;
 
 void osSemaphoreMutexUnlock(void);

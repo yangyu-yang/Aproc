@@ -11,7 +11,6 @@
 #include "mcu_circular_buf.h"
 #include "spdif_mode.h"
 #include "spdif_out.h"
-#include "ctrlvars.h"
 
 #ifdef CFG_RES_AUDIO_SPDIFOUT_EN
 

@@ -111,6 +111,14 @@ typedef enum{
 	CHN_MASK_MAX = (1<<12),
 }UPGRADE_APPLY_PARAM;
 
+typedef enum
+{
+	SysResourceCard=1,
+	SysResourceUDisk,
+	SysResourceUsbDevice,
+	SysResourceBtOTA,
+}ResourceType;
+
 typedef struct BOOT_REGISETR{
 	volatile  unsigned int RombootState:4;
 	volatile  unsigned int RombootParam:12;

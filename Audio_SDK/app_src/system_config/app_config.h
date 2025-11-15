@@ -20,7 +20,7 @@
 //************************************************************************************************************
 //    本系统默认开启2个系统全局宏，在IDE工程配置(Build Settings-Compiler-Symbols)，此处用于提醒
 //*CFG_APP_CONFIG 和 FUNC_OS_EN*/
-//***********CFG_APP_CONFIG*************************************************************************************************
+//************************************************************************************************************
 
 //************************************************************************************************************
 //    功能开关说明：
@@ -54,15 +54,15 @@
 //****************************************************************************************
 // 系统App功能模式选择
 //****************************************************************************************
-#define CFG_APP_IDLE_MODE_EN
+//#define CFG_APP_IDLE_MODE_EN
 //#define CFG_APP_BT_MODE_EN
-#define	CFG_APP_USB_PLAY_MODE_EN
-#define	CFG_APP_CARD_PLAY_MODE_EN
-#define	CFG_APP_LINEIN_MODE_EN
+//#define	CFG_APP_USB_PLAY_MODE_EN
+//#define	CFG_APP_CARD_PLAY_MODE_EN
+//#define	CFG_APP_LINEIN_MODE_EN
 //#define CFG_APP_RADIOIN_MODE_EN
-#define CFG_APP_USB_AUDIO_MODE_EN
-#define CFG_APP_I2SIN_MODE_EN
-#define	CFG_APP_OPTICAL_MODE_EN	// SPDIF 光纤模式
+//#define CFG_APP_USB_AUDIO_MODE_EN
+//#define CFG_APP_I2SIN_MODE_EN
+//#define	CFG_APP_OPTICAL_MODE_EN	// SPDIF 光纤模式
 //#define CFG_APP_COAXIAL_MODE_EN	// SPDIF 同轴模式
 //#define CFG_APP_HDMIIN_MODE_EN
 
@@ -516,7 +516,7 @@
 //    2.提示音功能开启，注意flash中const data提示音数据需要预先烧录，否则不会播放;
 //    3.const data数据开机检查，影响开机速度，主要用于验证。
 //****************************************************************************************
-#define CFG_FUNC_REMIND_SOUND_EN
+//#define CFG_FUNC_REMIND_SOUND_EN
 #ifdef CFG_FUNC_REMIND_SOUND_EN
 	#define CFG_PARAM_FIXED_REMIND_VOL   	CFG_PARA_SYS_VOLUME_DEFAULT		//固定提示音音量值,0表示受music vol同步控制
 #endif

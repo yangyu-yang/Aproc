@@ -981,9 +981,9 @@ bool RemindSoundRun(SysModeState ModeState)
 					DBG("Mute Remind\n");
 					RemindSoundCt.ItemState = REMIND_ITEM_MUTE;
 
-				}	
+				}
 			}
-		
+
 			break;
 
 		case REMIND_ITEM_MUTE:

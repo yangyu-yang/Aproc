@@ -24,10 +24,10 @@
 #include "bt_stack_service.h"
 #include "remind_sound.h"
 #include "audio_vol.h"
-#include "mode_task.h"
 #include "bt_play_mode.h"
 #include "bt_app_ddb_info.h"
 
+#if (BT_A2DP_SUPPORT)
 extern uint32_t gSpecificDevice;
 
 #if (BT_LINK_DEV_NUM == 2)
@@ -531,5 +531,5 @@ void BtA2dpStreamDataType(BT_A2DP_CALLBACK_PARAMS * param)
 	}
 }
 
-
+#endif
 

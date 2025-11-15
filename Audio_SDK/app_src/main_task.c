@@ -34,7 +34,6 @@
 #include "bt_config.h"
 #include "bt_app_ddb_info.h"
 #include "bt_hf_mode.h"
-#include "idle_mode.h"
 #include "bt_app_connect.h"
 #include <components/soft_watchdog/soft_watch_dog.h>
 #include "can_func.h"
@@ -118,8 +117,8 @@ static void MainAppInit(void)
 #endif
 	mainAppCt.msgHandle = MessageRegister(MAIN_NUM_MESSAGE_QUEUE);
 	mainAppCt.state = TaskStateCreating;
-	mainAppCt.SysCurrentMode = ModeIdle;
-	mainAppCt.SysPrevMode = ModeIdle;
+//	mainAppCt.SysCurrentMode = ModeIdle;
+//	mainAppCt.SysPrevMode = ModeIdle;
 }
 
 static void SysVarInit(void)
@@ -135,9 +134,9 @@ static void SysVarInit(void)
 	SetRgbLedMode(pBpSysInfo->rgb_mode);
 #endif
 
-	AudioEffectParambin.flow_index = pBpSysInfo->AudioEffectParambin_flow;
-	AudioEffectParambin.param_mode_index = pBpSysInfo->AudioEffectParambin_paramMode;
-	APP_DBG("EffectMode:%d,%d\n", AudioEffectParambin.flow_index, AudioEffectParambin.param_mode_index);
+	mainAppCt.effect_flow_index = pBpSysInfo->AudioEffectParambin_flow;
+	mainAppCt.effect_param_mode_index = pBpSysInfo->AudioEffectParambin_paramMode;
+	APP_DBG("EffectMode:%d,%d\n", mainAppCt.effect_flow_index, mainAppCt.effect_param_mode_index);
 
 	mainAppCt.MusicVolume = pBpSysInfo->MusicVolume;
 	if((mainAppCt.MusicVolume > CFG_PARA_MAX_VOLUME_NUM) || (mainAppCt.MusicVolume <= 0))
@@ -262,7 +261,7 @@ static void SysVarInit(void)
 		DBG("u or sd upgrade ok ,set mode to ModeBtAudioPlay \n");
 	}
 #endif
-	PowerOnModeGenerate((void *)pBpSysInfo);
+//	PowerOnModeGenerate((void *)pBpSysInfo);
 #else
 	PowerOnModeGenerate(NULL);
 #endif
@@ -424,7 +423,8 @@ static void PublicDetect(void)
 #if FLASH_BOOT_EN
 		//设备经过播放，预搜索mva包登记，可升级。拔出时取消登记。
 		#ifndef FUNC_UPDATE_CONTROL
-		if(SoftFlagGet(SoftFlagMvaInCard) && GetSystemMode() == ModeCardAudioPlay && (!SoftFlagGet(SoftFlagUpgradeOK)))
+//		if(SoftFlagGet(SoftFlagMvaInCard) && GetSystemMode() == ModeCardAudioPlay && (!SoftFlagGet(SoftFlagUpgradeOK)))
+        if(SoftFlagGet(SoftFlagMvaInCard) && (!SoftFlagGet(SoftFlagUpgradeOK)))
 		{
 			APP_DBG("MainApp:updata file exist in Card\n");
 			#ifdef FUNC_OS_EN
@@ -441,7 +441,8 @@ static void PublicDetect(void)
 			}
 			#endif
 		}
-		else if(SoftFlagGet(SoftFlagMvaInUDisk) && GetSystemMode() == ModeUDiskAudioPlay&& (!SoftFlagGet(SoftFlagUpgradeOK)))
+//		else if(SoftFlagGet(SoftFlagMvaInUDisk) && GetSystemMode() == ModeUDiskAudioPlay&& (!SoftFlagGet(SoftFlagUpgradeOK)))
+		else if(SoftFlagGet(SoftFlagMvaInUDisk) && (!SoftFlagGet(SoftFlagUpgradeOK)))
 		{
 			APP_DBG("MainApp:updata file exist in Udisk\n");
 			#ifdef FUNC_OS_EN
@@ -489,7 +490,8 @@ static void PublicMsgPross(MessageContext msg)
 		
 		case MSG_AUDIO_CORE_SERVICE_STARTED:
 			APP_DBG("MainApp:AudioCore service started\n");
-			SysModeTaskCreat();
+//			SysModeTaskCreat();
+			AudioStreamInit();
 	#ifdef	CFG_FUNC_OPEN_SLOW_DEVICE_TASK
 			{
 				extern	void CreatSlowDeviceTask(void);
@@ -671,16 +673,31 @@ static void MainAppTaskEntrance(void * param)
 		AutoTestMain(msg.msgId);
 		#endif
 
+#ifdef CFG_FUNC_AUDIO_EFFECT_ONLINE_TUNING_EN//usb path
+//		if((GetSystemMode() != ModeIdle)
+//		&& (GetSystemMode() != ModeUsbDevicePlay)
+//		&& (GetSystemMode() != ModeUDiskAudioPlay)
+//		)
+		{
+#ifdef CFG_COMMUNICATION_BY_USB
+			if(GetUSBDeviceInitState())
+			{
+				OTG_DeviceRequestProcess();
+			}
+#endif
+		}
+#endif
 		if(mainAppCt.state == TaskStateRunning)
 		{
 			DeviceServicePocess(msg.msgId);
-			if(msg.msgId != MSG_NONE)
-			{
-				SysModeGenerate(msg.msgId);
-				if(!AudioEffect_Msg_Check(msg.msgId))
-					MessageSend(GetSysModeMsgHandle(), &msg);
-			}
-			SysModeChangeTimeoutProcess();
+			CommonMsgProccess(msg.msgId);
+//			if(msg.msgId != MSG_NONE)
+//			{
+//				SysModeGenerate(msg.msgId);
+//				if(!AudioEffect_Msg_Check(msg.msgId))
+//					MessageSend(GetSysModeMsgHandle(), &msg);
+//			}
+//			SysModeChangeTimeoutProcess();
 		}
 	}
 }
@@ -709,7 +726,7 @@ MessageHandle GetMainMessageHandle(void)
 
 uint32_t GetSystemMode(void)
 {
-	return mainAppCt.SysCurrentMode;
+	return 0;//mainAppCt.SysCurrentMode;
 }
 
 void SamplesFrameUpdataMsg(void)//发现帧变化，发送消息
@@ -730,25 +747,25 @@ void EffectUpdataMsg(void)
 	MessageSend(mainAppCt.msgHandle, &msgSend);
 }
 
-uint32_t IsBtAudioMode(void)
-{
-	return (GetSysModeState(ModeBtAudioPlay) == ModeStateRunning);
-}
-
-uint32_t IsBtHfMode(void)
-{
-	return (GetSysModeState(ModeBtHfPlay) == ModeStateRunning);
-}
-
-uint32_t IsIdleModeReady(void)
-{
-	if(GetModeDefineState(ModeIdle))
-	{
-		if(GetSysModeState(ModeIdle) == ModeStateInit || GetSysModeState(ModeIdle) == ModeStateRunning )
-			return 1;
-	}
-	return 0;
-}
+//uint32_t IsBtAudioMode(void)
+//{
+//	return (GetSysModeState(ModeBtAudioPlay) == ModeStateRunning);
+//}
+//
+//uint32_t IsBtHfMode(void)
+//{
+//	return (GetSysModeState(ModeBtHfPlay) == ModeStateRunning);
+//}
+//
+//uint32_t IsIdleModeReady(void)
+//{
+//	if(GetModeDefineState(ModeIdle))
+//	{
+//		if(GetSysModeState(ModeIdle) == ModeStateInit || GetSysModeState(ModeIdle) == ModeStateRunning )
+//			return 1;
+//	}
+//	return 0;
+//}
 
 
 void PowerOffMessage(void)

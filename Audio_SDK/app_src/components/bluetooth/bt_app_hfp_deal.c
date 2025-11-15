@@ -17,7 +17,6 @@
 #include "bt_manager.h"
 #include "bt_app_hfp_deal.h"
 #include "bt_interface.h"
-#include "mode_task.h"
 #include "bt_app_common.h"
 #include "bt_hf_mode.h"
 #include "bt_stack_service.h"

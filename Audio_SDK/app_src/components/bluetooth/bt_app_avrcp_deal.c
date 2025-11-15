@@ -21,9 +21,9 @@
 #include "bt_app_common.h"
 #include "app_message.h"
 #include "bt_stack_service.h"
-#include "mode_task.h"
 #include "main_task.h"
 
+#if (BT_A2DP_SUPPORT)
 #if (BT_AVRCP_SONG_TRACK_INFOR)
 #define StringMaxLen 60
 #include "string_convert.h"
@@ -486,3 +486,4 @@ void GetBtMediaInfo(void *params)
 }
 #endif
 
+#endif
